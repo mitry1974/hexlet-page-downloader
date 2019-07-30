@@ -1,0 +1,45 @@
+{
+  "name": "mt-page-loader",
+  "version": "1.0.0",
+  "description": "Load page from internet and put to the special folder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "NODE_ENV=production npx babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "bin": {
+    "gendiff": "dist/bin/page-loader.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitry1974/backend-project-lvl3.git"
+  },
+  "author": "Trushtalevskiy D.V.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mitry1974/backend-project-lvl3/issues"
+  },
+  "homepage": "https://github.com/mitry1974/backend-project-lvl3#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.0",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.5",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.8.0",
+    "babel-register": "^6.26.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.17.3",
+    "jest": "^24.8.0"
+  },
+  "dependencies": {
+    "commander": "^2.20.0",
+    "lodash": "^4.17.11"
+  }
+}
