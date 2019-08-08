@@ -9,10 +9,10 @@ lint:
 	npx eslint .
 
 help:
-	npx babel-node src/bin/gendiff.js -h
+	npx babel-node src/bin/page-load.js -h
 
 test:
 	npx jest
 
 run version:
-	npx babel-node src/bin/gendiff.js -V
+	npx babel-node src/bin/page-load.js -V
