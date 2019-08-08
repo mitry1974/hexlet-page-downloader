@@ -10,5 +10,3 @@ export default (pageAddress, destinationDirectory) => {
     .then(res => res.data)
     .then(data => fs.writeFile(fileName, data));
 };
-
-export { getFileName };
