@@ -1,9 +1,21 @@
 language: node_js
 node_js:
-- node
-script:
-- make lint
-- make test
+  - node
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script: 
+  - make lint
+  - make check-types
+  - make test
+  
 env:
   global:
     secure: Wao9QnMbhUZP1FqZbjSveilhzI1cW50rBY+MwjxHkjjJBMmN3CqOLACxViIJuDaEtpFdqjL3r9F+iu6Z41LLhtDnHdzgh1jepsuQPNZlwxnI20/VrgUEErZ0ty2Ev1VBVizFPhoexeeesRLRmzy/pHp/zIXPXT0VnLVfwpJfrnFZ0PXORasyZHdy0+YoWkybN8j5otb/d00watOYZaL4NLuXVTvfGx5K4Xc/S7uODLRukI+prAk8y+ZiV9hL53WxFpAv5dqmILyDnfy4VmCGJToy9sdRzE401/BEccNGGD0qY0V3bp5yYM6uAc1yOIx0Udr2blhgYEL8i+9J4GwR9QeAcO9NciTzGTEiUXEQUQlzBWpMbw6u0Ni/tfbnzGVE7ghoWaPf0TNP0cNMi3Wa8zay4ZFkKlcP7UlhPDEPYDniHzefdObFFDp081TrAs7NnHyWgz9eGc5yDy7PB+cOHu17AAIA0+mGNU4rec45x6jP1gvlO+yduX2166h6ygmxo+Se3A9fqhuYWkTtqXAD9pJ125L4GCuStMVzxUGYfa2gHnKRmTs4DW7g5fBzFQCqoiIMNmYJ0bTutmF0TJ/k470ZO2NPfIhQr3kc1Am7Gzpuk5wGm6SODEg6ejaKkz1rOlX05mZvCIv51dLuc8AETainvtStbKAWD1argbDRowY=
+
+    after_script:
+  - ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
+  - ./cc-test-reporter -d after-build --exit-code $TRAVIS_TEST_RESULT

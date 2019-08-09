@@ -14,6 +14,10 @@
   "files": [
     "dist"
   ],
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mitry1974/backend-project-lvl3.git"
