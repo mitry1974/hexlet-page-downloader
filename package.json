@@ -4,7 +4,7 @@
   "description": "Load page from internet and put to the special folder.",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest",
     "build": "NODE_ENV=production npx babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build"
   },
