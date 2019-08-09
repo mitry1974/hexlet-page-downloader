@@ -1,21 +1,18 @@
 language: node_js
 node_js:
-  - node
-
+- node
 before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-
-script: 
-  - make lint
-  - make check-types
-  - make test
-  
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- "./cc-test-reporter before-build"
+script:
+- make lint
+- make check-types
+- make test
 env:
   global:
-    secure: Wao9QnMbhUZP1FqZbjSveilhzI1cW50rBY+MwjxHkjjJBMmN3CqOLACxViIJuDaEtpFdqjL3r9F+iu6Z41LLhtDnHdzgh1jepsuQPNZlwxnI20/VrgUEErZ0ty2Ev1VBVizFPhoexeeesRLRmzy/pHp/zIXPXT0VnLVfwpJfrnFZ0PXORasyZHdy0+YoWkybN8j5otb/d00watOYZaL4NLuXVTvfGx5K4Xc/S7uODLRukI+prAk8y+ZiV9hL53WxFpAv5dqmILyDnfy4VmCGJToy9sdRzE401/BEccNGGD0qY0V3bp5yYM6uAc1yOIx0Udr2blhgYEL8i+9J4GwR9QeAcO9NciTzGTEiUXEQUQlzBWpMbw6u0Ni/tfbnzGVE7ghoWaPf0TNP0cNMi3Wa8zay4ZFkKlcP7UlhPDEPYDniHzefdObFFDp081TrAs7NnHyWgz9eGc5yDy7PB+cOHu17AAIA0+mGNU4rec45x6jP1gvlO+yduX2166h6ygmxo+Se3A9fqhuYWkTtqXAD9pJ125L4GCuStMVzxUGYfa2gHnKRmTs4DW7g5fBzFQCqoiIMNmYJ0bTutmF0TJ/k470ZO2NPfIhQr3kc1Am7Gzpuk5wGm6SODEg6ejaKkz1rOlX05mZvCIv51dLuc8AETainvtStbKAWD1argbDRowY=
-
-    after_script:
-  - ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
-  - ./cc-test-reporter -d after-build --exit-code $TRAVIS_TEST_RESULT 
+    secure: QXq99kmJha5d1AfEIFOhUgn+S3/jgbmuGqrIBkXSM7japSm+w7CGilswB2RiEN3OI1AP6GdKEWS4IIWSHXuIgE9jUzkl1N+fo+QCj1uCzgLQyVwuZhQhFpLmA6F34qRJr3KzLg3PociXhfi1pIpTDCr7+oFtjCZu+hM8amLZ606pFwmDENrG5DRx8EuHpSXYOldRl6UNko+isb0H8O6+OFbSRxQGP68GEP8CVHKQL8GsccJ/DjDg2WJf+yfG3bCWgkWVBW8C5qFXEF5Skpkj4mvJ+G/LIMcaLGO5AbVYYaY4csadeOeyGuNKLLiQz2fF7GFawJ+RKbMH+c60j4fBovV/qs2da92UG2yRUS/PrV2DZIdJHauRRU6vcabie9ZlZc+CzcQWdlvxciCFwz+hcXsyLVBo/Guohz37Dzcmnk7zMCtjjhBNNhgF/fOENrqj0GtrtcSNlKNe2XnXCnH/FCfswhhQdlZ+EGTEQl8QYJgJyQ1kGOjCWKjYPrmxdsrVHTIMiUkF5UaOBHdyF/WrGiPDH+wEKZb7Au6g7hGDmJkQusEquHp7JQgSrqZwOAWes7in86KPzui+dqFayRo1CV0SQi+r1SIW/ArqH2dfzcFWEThV66FHRnXHcL/2XNtZPM8irkcW2ChBplnIee3TVpgtD1n7qiGYyxqKBt534Vo=
+after_script:
+- "./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info"
+- "./cc-test-reporter -d after-build --exit-code $TRAVIS_TEST_RESULT"
