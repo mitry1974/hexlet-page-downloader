@@ -18,7 +18,7 @@ test('loading page', async () => {
       'Content-Type': 'application/html',
     });
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
-  await loadPage(`${testUrl}/courses`, tempDir);
+  await loadPage(tempDir, `${testUrl}/courses`);
   const actual = await fs.readFile(`${tempDir}/${fixtureFileName}`);
   const expected = await fs.readFile(expectedFileName);
   expect(actual).toStrictEqual(expected);

@@ -1,5 +1,5 @@
 {
-  "name": "mt-page-loader",
+  "name": "page-loader",
   "version": "1.0.0",
   "description": "Load page from internet and put to the special folder.",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "gendiff": "dist/bin/page-loader.js"
+    "page-loader": "dist/bin/page-loader.js"
   },
   "files": [
     "dist"
