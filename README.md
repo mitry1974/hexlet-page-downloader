@@ -15,4 +15,4 @@ Usage:
     -V, --version        output the version number
     -o, --output         Output directory
 
-<p>Asciinema Step 1</p> [![asciicast](https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg.svg)](https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg)
+<p>Asciinema Step 1 - https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg</p> 
