@@ -17,3 +17,4 @@ Usage:
 
 <p>Asciinema Step 1 - https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg</p>
 <p>Asciinema Step 2 - https://asciinema.org/a/o0xFh0KdIYMqYyFg8p9hDAAmQ</p>
+<p>Asciinema Step 3 - https://asciinema.org/a/FIClAZrnZ5rc5xwFj8t32rbLu</p>

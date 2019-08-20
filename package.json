@@ -17,7 +17,10 @@
   "jest": {
     "testEnvironment": "node",
     "collectCoverage": true,
-    "testPathIgnorePatterns" : ["<rootDir>/node_modules/", "<rootDir>/__tests__/__fixtures__" ]
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/__tests__/__fixtures__"
+    ]
   },
   "repository": {
     "type": "git",
@@ -48,6 +51,6 @@
     "axios": "^0.19.0",
     "cherio": "^1.0.0-rc.2",
     "commander": "^3.0.0",
-    "log4js": "^5.0.0"
+    "debug": "^4.1.1"
   }
 }

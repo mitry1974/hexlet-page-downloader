@@ -3,10 +3,9 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import cherio from 'cherio';
 import url from 'url';
-import log4js from 'log4js';
+import debug from 'debug';
 
-const logger = log4js.getLogger();
-logger.level = 'debug';
+const log = debug('pageloader');
 
 const removeDotsByDashes = str => str.replace(/[\W]/g, '-');
 
@@ -44,7 +43,7 @@ const getResourceUrls = ($, resourcesDir) => $('link, script, img')
 
     if (resourceUrl && isLocalUrl(resourceUrl)) {
       const resourcePath = `./${path.join('./', resourcesDir, getResourceFileName(resourceUrl))}`;
-      logger.info(`Resource url: ${resourceUrl} ->, resource local path: ${resourcePath}`);
+      log(`Resource url: ${resourceUrl} ->, resource local path: ${resourcePath}`);
       $(el).attr(tag, resourcePath);
       return resourceUrl;
     }
@@ -54,16 +53,16 @@ const getResourceUrls = ($, resourcesDir) => $('link, script, img')
   .filter(el => el !== '');
 
 export default (destinationDirectory, pageAddress) => {
-  logger.info(`loading page: ${pageAddress} to directory: ${destinationDirectory}`);
+  log(`loading page: ${pageAddress} to directory: ${destinationDirectory}`);
   const fileName = path.join(destinationDirectory, `${getPageFileName(pageAddress)}.html`);
-  logger.info(`Page file name: ${fileName}`);
+  log(`Page file name: ${fileName}`);
   const parsedUrl = url.parse(pageAddress);
   return axios.get(pageAddress)
     .then((htmlResp) => {
       const $ = cherio.load(htmlResp.data);
       const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
       const resourcesAbsolutPath = path.join(destinationDirectory, resourcersRelativePath);
-      logger.info(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
+      log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
       const urls = getResourceUrls($, resourcersRelativePath);
       return fs.mkdir(resourcesAbsolutPath)
         .then(() => fs.writeFile(fileName, $.html(), 'utf-8'))
@@ -78,7 +77,7 @@ export default (destinationDirectory, pageAddress) => {
             });
         })))
         .catch((err) => {
-          logger.error(`catched error: ${err}`);
+          log(`catched error: ${err}`);
           throw err;
         });
     });
