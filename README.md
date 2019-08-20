@@ -7,7 +7,7 @@ Usage:
  --output /var/tmp url
   Usage: page-loader [options] <url>
 
-  Download pages to the hard drive.
+  Download <url> page to the hard drive.
 
   Options:
 
@@ -15,4 +15,5 @@ Usage:
     -V, --version        output the version number
     -o, --output         Output directory
 
-<p>Asciinema Step 1 - https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg</p> 
+<p>Asciinema Step 1 - https://asciinema.org/a/FhMehhhmTYBCH8SH0do1zmddg</p>
+<p>Asciinema Step3 - https://asciinema.org/a/o0xFh0KdIYMqYyFg8p9hDAAmQ</p>

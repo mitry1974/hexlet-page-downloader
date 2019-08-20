@@ -1,6 +1,6 @@
 {
   "name": "page-loader",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Load page from internet and put to the special folder.",
   "main": "index.js",
   "scripts": {
@@ -29,12 +29,12 @@
   },
   "homepage": "https://github.com/mitry1974/backend-project-lvl3#readme",
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.0",
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.8.0",
+    "babel-jest": "^24.9.0",
     "babel-register": "^6.26.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -46,7 +46,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "cherio": "^1.0.0-rc.2",
-    "commander": "^2.20.0",
-    "valid-url": "^1.0.9"
+    "commander": "^3.0.0",
+    "log4js": "^5.0.0"
   }
 }

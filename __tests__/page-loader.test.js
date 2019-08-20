@@ -13,6 +13,17 @@ const fixturesPath = './__fixtures__/';
 const resoursesPath = './hexlet-io-courses_files/';
 const pathResolveFixtures = fileName => path.resolve(__dirname, fixturesPath, fileName);
 
+test('test 404 error', async () => {
+  nock('https://hexlet.io')
+    .get('/courses')
+    .reply(404);
+  try {
+    await loadPage('', 'https://hexlet.io/courses');
+  } catch (err) {
+    expect(err.message).toMatch('Request failed with status code 404');
+  }
+});
+
 test('loading page', async () => {
   const originalHtmlFileName = pathResolveFixtures('original.html');
   const expectedHtmlFileName = pathResolveFixtures('hexlet-io-courses.html');
@@ -26,7 +37,7 @@ test('loading page', async () => {
       'Content-Type': 'application/html',
     });
 
-  nock('https://cdn2.hexlet.io')
+  nock('https://hexlet.io')
     .get('/assets/application.css')
     .replyWithFile(200, expectedCssFileName, {
       'Content-Type': 'text/css',
@@ -42,7 +53,12 @@ test('loading page', async () => {
 
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
-  await loadPage(tempDir, 'https://hexlet.io/courses');
+  try {
+    await loadPage(tempDir, 'https://hexlet.io/courses');
+  } catch (err) {
+    console.log(err);
+    return;
+  }
 
   const actualHtml = await fs.readFile(`${tempDir}/hexlet-io-courses.html`, 'utf-8');
   const expectedHtml = await fs.readFile(expectedHtmlFileName, 'utf-8');
