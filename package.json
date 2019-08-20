@@ -16,7 +16,8 @@
   ],
   "jest": {
     "testEnvironment": "node",
-    "collectCoverage": true
+    "collectCoverage": true,
+    "testPathIgnorePatterns" : ["<rootDir>/node_modules/", "<rootDir>/__tests__/__fixtures__" ]
   },
   "repository": {
     "type": "git",
