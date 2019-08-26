@@ -4,6 +4,7 @@ import { promises as fs } from 'fs';
 import cherio from 'cherio';
 import url from 'url';
 import debug from 'debug';
+import Listr from 'listr';
 
 const log = debug('page-loader');
 
@@ -75,14 +76,20 @@ const getAndSaveResources = (
   resourceUrls, parsedServerUrl, directortypath,
 ) => resourceUrls.map((el) => {
   const resourceUrl = `${parsedServerUrl.protocol}//${parsedServerUrl.hostname}${el}`;
-  return axios.get(resourceUrl, { responseType: 'arraybuffer' })
-    .then((resourceResp) => {
-      const resourceFileName = path.join(
-        directortypath, getResourceFileName(el),
-      );
-      return fs.writeFile(resourceFileName, resourceResp.data);
-    })
-    .catch(err => proceedError(err));
+  return {
+    title: `Downloading resource ${resourceUrl}`,
+    task: () => {
+      log(`Dowloadind resource ${resourceUrl}`);
+      return axios.get(resourceUrl, { responseType: 'arraybuffer' })
+        .then((resourceResp) => {
+          const resourceFileName = path.join(
+            directortypath, getResourceFileName(el),
+          );
+          log(`Resouce downloaded, write to file ${resourceFileName}`);
+          return fs.writeFile(resourceFileName, resourceResp.data);
+        });
+    },
+  };
 });
 
 export default (destinationDirectory, pageAddress) => {
@@ -92,17 +99,27 @@ export default (destinationDirectory, pageAddress) => {
   const parsedUrl = url.parse(pageAddress);
   const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
   const resourcesAbsolutPath = path.join(destinationDirectory, resourcersRelativePath);
-  let urls = [];
   log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
+  const tasks = new Listr([
+    {
+      title: `Loading ${pageAddress} to the ${destinationDirectory} directory`,
+      task: ctx => fs.mkdir(resourcesAbsolutPath)
+        .then(() => axios.get(pageAddress))
+        .then((response) => {
+          const $ = cherio.load(response.data);
+          ctx.urls = getResourceUrlsAndModifyHtml($, resourcersRelativePath);
+          ctx.html = $.html();
+        })
+        .then(() => fs.writeFile(fileName, ctx.html, 'utf-8')),
+    },
+    {
+      title: 'Loading resources',
+      task: (ctx) => {
+        const resourceTasks = getAndSaveResources(ctx.urls, parsedUrl, resourcesAbsolutPath);
+        return new Listr(resourceTasks, { concurrent: true });
+      },
+    },
+  ]);
 
-  return fs.mkdir(resourcesAbsolutPath)
-    .then(() => axios.get(pageAddress))
-    .then((response) => {
-      const $ = cherio.load(response.data);
-      urls = getResourceUrlsAndModifyHtml($, resourcersRelativePath);
-      return $.html();
-    })
-    .then(html => fs.writeFile(fileName, html, 'utf-8'))
-    .then(() => Promise.all(getAndSaveResources(urls, parsedUrl, resourcesAbsolutPath)))
-    .catch(err => proceedError(err));
+  return tasks.run().catch(err => proceedError(err));
 };
