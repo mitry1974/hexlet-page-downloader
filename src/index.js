@@ -5,7 +5,7 @@ import cherio from 'cherio';
 import url from 'url';
 import debug from 'debug';
 
-const log = debug('pageloader');
+const log = debug('page-loader');
 
 const removeDotsByDashes = str => str.replace(/[\W]/g, '-');
 
@@ -36,13 +36,13 @@ const isLocalUrl = (u) => {
   return !hostname && u.match(/^\/\/(.*)/) === null && u.match(/^\/(.*)/) !== null;
 };
 
-const getResourceUrls = ($, resourcesDir) => $('link, script, img')
+const getResourceUrlsAndModifyHtml = ($, resourcesDir) => $('link, script, img')
   .map((i, el) => {
     const tag = tag2url[el.name];
     const resourceUrl = $(el).attr(tag);
 
     if (resourceUrl && isLocalUrl(resourceUrl)) {
-      const resourcePath = `./${path.join('./', resourcesDir, getResourceFileName(resourceUrl))}`;
+      const resourcePath = `./${path.join(resourcesDir, getResourceFileName(resourceUrl))}`;
       log(`Resource url: ${resourceUrl} ->, resource local path: ${resourcePath}`);
       $(el).attr(tag, resourcePath);
       return resourceUrl;
@@ -52,33 +52,57 @@ const getResourceUrls = ($, resourcesDir) => $('link, script, img')
   .get()
   .filter(el => el !== '');
 
+const errorDescriptions = {
+  404: "Can't connect to server.",
+  ENOENT: "Can't find file or directory.",
+};
+
+const proceedError = (error) => {
+  if (error.response) {
+    log(`network error: ${error.response.status}`);
+    const newError = new Error(errorDescriptions[error.response.status]);
+    newError.code = error.response.status;
+    newError.stack = error.stack;
+    newError.path = error.response.config.url;
+    throw newError;
+  } else {
+    log(`fs error: ${error}`);
+    throw error;
+  }
+};
+
+const getAndSaveResources = (
+  resourceUrls, parsedServerUrl, directortypath,
+) => resourceUrls.map((el) => {
+  const resourceUrl = `${parsedServerUrl.protocol}//${parsedServerUrl.hostname}${el}`;
+  return axios.get(resourceUrl, { responseType: 'arraybuffer' })
+    .then((resourceResp) => {
+      const resourceFileName = path.join(
+        directortypath, getResourceFileName(el),
+      );
+      return fs.writeFile(resourceFileName, resourceResp.data);
+    })
+    .catch(err => proceedError(err));
+});
+
 export default (destinationDirectory, pageAddress) => {
-  log(`loading page: ${pageAddress} to directory: ${destinationDirectory}`);
+  log(`\n\nloading page: ${pageAddress} to directory: ${destinationDirectory}`);
   const fileName = path.join(destinationDirectory, `${getPageFileName(pageAddress)}.html`);
   log(`Page file name: ${fileName}`);
   const parsedUrl = url.parse(pageAddress);
-  return axios.get(pageAddress)
-    .then((htmlResp) => {
-      const $ = cherio.load(htmlResp.data);
-      const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
-      const resourcesAbsolutPath = path.join(destinationDirectory, resourcersRelativePath);
-      log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
-      const urls = getResourceUrls($, resourcersRelativePath);
-      return fs.mkdir(resourcesAbsolutPath)
-        .then(() => fs.writeFile(fileName, $.html(), 'utf-8'))
-        .then(() => Promise.all(urls.map((el) => {
-          const resourceUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${el}`;
-          return axios.get(resourceUrl, { responseType: 'arraybuffer' })
-            .then((resourceResp) => {
-              const resourceFileName = path.join(
-                resourcesAbsolutPath, getResourceFileName(el),
-              );
-              return fs.writeFile(resourceFileName, resourceResp.data);
-            });
-        })))
-        .catch((err) => {
-          log(`catched error: ${err}`);
-          throw err;
-        });
-    });
+  const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
+  const resourcesAbsolutPath = path.join(destinationDirectory, resourcersRelativePath);
+  let urls = [];
+  log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
+
+  return fs.mkdir(resourcesAbsolutPath)
+    .then(() => axios.get(pageAddress))
+    .then((response) => {
+      const $ = cherio.load(response.data);
+      urls = getResourceUrlsAndModifyHtml($, resourcersRelativePath);
+      return $.html();
+    })
+    .then(html => fs.writeFile(fileName, html, 'utf-8'))
+    .then(() => Promise.all(getAndSaveResources(urls, parsedUrl, resourcesAbsolutPath)))
+    .catch(err => proceedError(err));
 };
