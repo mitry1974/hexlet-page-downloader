@@ -12,7 +12,7 @@ help:
 	npx babel-node src/bin/page-load.js -h
 
 test:
-	DEBUG='page-loader' npx jest --watch
+	DEBUG='page-loader' npx jest
 
 run version:
 	npx babel-node src/bin/page-load.js -V
