@@ -120,7 +120,6 @@ test('test missing resouse links', async () => {
   try {
     await loadPage(tempDir, 'https://hexlet.io/courses');
   } catch (err) {
-    console.log(err);
     expect(err.code).toBe(404);
   }
 
@@ -134,7 +133,6 @@ test('test missing resouse links', async () => {
   try {
     await fs.readFile(`${tempDirResourcesPath}/assets-application.css`, 'utf-8');
   } catch (err) {
-    console.log(err);
     expect(err.code).toBe('ENOENT');
   }
 
