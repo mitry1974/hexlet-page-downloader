@@ -11,7 +11,6 @@ program
   .action(pageAddress => loadPage(program.output, pageAddress)
     .then(() => {
       console.log(`Page ${pageAddress} successfully loaded to ${program.output} ! `);
-      process.exit(0);
     })
     .catch((err) => {
       console.error(`Error loading page ${pageAddress}: ${err}`);

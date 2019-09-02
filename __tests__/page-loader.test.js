@@ -46,11 +46,8 @@ test('loading page', async () => {
 
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
-  try {
-    await loadPage(tempDir, 'https://hexlet.io/courses');
-  } catch (err) {
-    console.log(err);
-  }
+
+  await loadPage(tempDir, 'https://hexlet.io/courses');
 
   const actualHtml = await fs.readFile(`${tempDir}/hexlet-io-courses.html`, 'utf-8');
   const expectedHtml = await fs.readFile(expectedHtmlFileName, 'utf-8');
@@ -72,11 +69,7 @@ test('test missing download directory error', async () => {
   nock('https://hexlet.io')
     .get('/courses')
     .reply(200);
-  try {
-    await loadPage('missing directory', 'https://hexlet.io/courses');
-  } catch (err) {
-    expect(err.code).toBe('ENOENT');
-  }
+  await expect(loadPage('missing directory', 'https://hexlet.io/courses')).rejects.toThrow('Can\'t find file or directory: missing directory/hexlet-io-courses_files');
 });
 
 test('test main page 404 error', async () => {
@@ -84,11 +77,7 @@ test('test main page 404 error', async () => {
   nock('https://hexlet.io')
     .get('/courses')
     .reply(404);
-  try {
-    await loadPage(tempDir, 'https://hexlet.io/courses');
-  } catch (err) {
-    expect(err.code).toBe(404);
-  }
+  await expect(loadPage(tempDir, 'https://hexlet.io/courses')).rejects.toThrow('Can\'t connect to server: https://hexlet.io/courses');
 });
 
 test('test missing resouse links', async () => {
@@ -117,11 +106,8 @@ test('test missing resouse links', async () => {
 
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
-  try {
-    await loadPage(tempDir, 'https://hexlet.io/courses');
-  } catch (err) {
-    expect(err.code).toBe(404);
-  }
+
+  await expect(loadPage(tempDir, 'https://hexlet.io/courses')).rejects.toThrow('Can\'t connect to server: https://hexlet.io/assets/application.css');
 
   const actualHtml = await fs.readFile(`${tempDir}/hexlet-io-courses.html`, 'utf-8');
   const expectedHtml = await fs.readFile(expectedHtmlFileName, 'utf-8');
@@ -130,11 +116,9 @@ test('test missing resouse links', async () => {
   const tempDirResourcesPath = path.resolve(tempDir, resoursesPath);
   const actualJs = await fs.readFile(`${tempDirResourcesPath}/packs-script.js`, 'utf-8');
   const actualImg = await fs.readFile(`${tempDirResourcesPath}/derivations-image`);
-  try {
-    await fs.readFile(`${tempDirResourcesPath}/assets-application.css`, 'utf-8');
-  } catch (err) {
-    expect(err.code).toBe('ENOENT');
-  }
+
+  const cssFileName = `${tempDirResourcesPath}/assets-application.css`;
+  await expect(fs.readFile(`${cssFileName}`, 'utf-8')).rejects.toThrow(`ENOENT: no such file or directory, open '${cssFileName}'`);
 
   const expectedJs = await fs.readFile(expectedJsFileName, 'utf-8');
   const expectedImg = await fs.readFile(expectedImgFileName);

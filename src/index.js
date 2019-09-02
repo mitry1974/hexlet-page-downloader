@@ -12,10 +12,7 @@ const removeDotsByDashes = str => str.replace(/[\W]/g, '-');
 
 const getPageFileName = (pageUrl) => {
   const parsedUrl = url.parse(pageUrl);
-  const urlPart = parsedUrl.pathname.length > 1
-    ? path.join(parsedUrl.hostname, parsedUrl.pathname)
-    : parsedUrl.hostname;
-  return removeDotsByDashes(urlPart);
+  return removeDotsByDashes(path.join(parsedUrl.hostname, parsedUrl.pathname));
 };
 
 const getResourceFileName = (resourceUrl) => {
@@ -54,22 +51,24 @@ const getResourceUrlsAndModifyHtml = ($, resourcesDir) => $('link, script, img')
   .filter(el => el !== '');
 
 const errorDescriptions = {
-  404: "Can't connect to server.",
-  ENOENT: "Can't find file or directory.",
+  404: errorPath => `Can't connect to server: ${errorPath}`,
+  ENOENT: errorPath => `Can't find file or directory: ${errorPath}`,
+};
+
+const getErrorMessage = (errorCode, objPath) => errorDescriptions[errorCode](objPath);
+
+const getErrorInfo = (error) => {
+  if (error.response) {
+    return [error.response.status, error.response.config.url];
+  }
+  return [error.code, error.path];
 };
 
 const proceedError = (error) => {
-  if (error.response) {
-    log(`network error: ${error.response.status}`);
-    const newError = new Error(errorDescriptions[error.response.status]);
-    newError.code = error.response.status;
-    newError.stack = error.stack;
-    newError.path = error.response.config.url;
-    throw newError;
-  } else {
-    log(`fs error: ${error}`);
-    throw error;
-  }
+  const [errorCode, errorPath] = getErrorInfo(error);
+  const errorMessage = getErrorMessage(errorCode, errorPath);
+  log(`proceedError, error: ${errorMessage}`);
+  return new Error(errorMessage);
 };
 
 const getAndSaveResources = (
@@ -100,26 +99,21 @@ export default (destinationDirectory, pageAddress) => {
   const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
   const resourcesAbsolutPath = path.join(destinationDirectory, resourcersRelativePath);
   log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
-  const tasks = new Listr([
-    {
-      title: `Loading ${pageAddress} to the ${destinationDirectory} directory`,
-      task: ctx => fs.mkdir(resourcesAbsolutPath)
-        .then(() => axios.get(pageAddress))
-        .then((response) => {
-          const $ = cherio.load(response.data);
-          ctx.urls = getResourceUrlsAndModifyHtml($, resourcersRelativePath);
-          ctx.html = $.html();
-        })
-        .then(() => fs.writeFile(fileName, ctx.html, 'utf-8')),
-    },
-    {
-      title: 'Loading resources',
-      task: (ctx) => {
-        const resourceTasks = getAndSaveResources(ctx.urls, parsedUrl, resourcesAbsolutPath);
-        return new Listr(resourceTasks, { concurrent: true });
-      },
-    },
-  ]);
-
-  return tasks.run().catch(err => proceedError(err));
+  let urls = [];
+  return fs.mkdir(resourcesAbsolutPath)
+    .then(() => axios.get(pageAddress))
+    .then((response) => {
+      const $ = cherio.load(response.data);
+      urls = getResourceUrlsAndModifyHtml($, resourcersRelativePath);
+      return $.html();
+    })
+    .then(html => fs.writeFile(fileName, html, 'utf-8'))
+    .then(() => {
+      const resourceTasks = getAndSaveResources(urls, parsedUrl, resourcesAbsolutPath);
+      const tasks = new Listr(resourceTasks, { concurrent: true });
+      return tasks.run();
+    })
+    .catch((error) => {
+      throw proceedError(error);
+    });
 };
