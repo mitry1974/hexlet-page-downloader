@@ -44,7 +44,6 @@ test('loading page', async () => {
       'Content-Type': 'application/javascript',
     });
 
-
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
 
   await loadPage(tempDir, 'https://hexlet.io/courses');
@@ -103,7 +102,6 @@ test('test missing resouse links', async () => {
     .replyWithFile(200, expectedJsFileName, {
       'Content-Type': 'application/javascript',
     });
-
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader'));
 
