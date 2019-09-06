@@ -19,4 +19,4 @@ Usage:
 <p>Asciinema Step 2 - https://asciinema.org/a/o0xFh0KdIYMqYyFg8p9hDAAmQ</p>
 <p>Asciinema Step 3 - https://asciinema.org/a/FIClAZrnZ5rc5xwFj8t32rbLu</p>
 <p>Asciinema Step 4 - https://asciinema.org/a/rTIvJ6UVVFDJwt6rLMkWAFD15</p>
-<p>Asciinema Step 5 - https://asciinema.org/a/qsasRf9tpiBgXhubKpsj9RgQv</p>
+<p>Asciinema Step 5 - https://asciinema.org/a/lcB6jMEZlMEOwh3xvynHCS8U9</p>
