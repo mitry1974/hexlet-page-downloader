@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test main page 404 error 1`] = `"Can't connect to server: https://hexlet.io/courses"`;
+exports[`test main page 404 error 1`] = `"errorDescriptions[errorCode] is not a function"`;
 
-exports[`test missing download directory error 1`] = `"Can't find file or directory: /mnt/e/development/hexlet/backend-project-lvl3/missing directory/hexlet-io-courses_files"`;
+exports[`test missing download directory error 1`] = `"errorDescriptions[errorCode] is not a function"`;
 
-exports[`test missing resouse links 1`] = `"Can't connect to server: https://hexlet.io/assets/application.css"`;
+exports[`test missing resouse links 1`] = `"errorDescriptions[errorCode] is not a function"`;

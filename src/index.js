@@ -51,10 +51,10 @@ const getResourceUrlsAndModifyHtml = ($, resourcesDir) => Array.from(new Set($('
   .filter(el => el !== '')));
 
 const errorDescriptions = {
-  404: errorPath => `Can't connect to server: ${errorPath}`,
-  ENOENT: errorPath => `Can't find file or directory: ${errorPath}`,
-  ENOTFOUND: errorPath => `Page or resource not found: ${errorPath}`,
-  EEXIST: errorPath => `File or directory already exists: ${errorPath}`,
+  404: 'Can\'t connect to server.',
+  ENOENT: 'Can\'t find file or directory.',
+  ENOTFOUND: 'Page or resource not found.',
+  EEXIST: 'File or directory already exists.',
 };
 
 const getErrorMessage = (errorCode, objPath) => errorDescriptions[errorCode](objPath);
@@ -106,7 +106,7 @@ export default (destinationDirectory, pageAddress) => {
   log(`Page file name: ${fileName}`);
   const parsedUrl = url.parse(pageAddress);
   const resourcersRelativePath = `${getPageFileName(pageAddress)}_files`;
-  const resourcesAbsolutPath = Path.resolve(destinationDirectory, resourcersRelativePath);
+  const resourcesAbsolutPath = Path.join(destinationDirectory, resourcersRelativePath);
   log(`Resourses absolute path: ${resourcesAbsolutPath}, resourses relative path: ${resourcersRelativePath}`);
   let urls = [];
   log(`Creating directory: ${resourcesAbsolutPath}`);
